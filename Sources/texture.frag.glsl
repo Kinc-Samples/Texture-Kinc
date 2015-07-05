@@ -6,7 +6,7 @@ varying vec2 texcoord;
 
 uniform sampler2D sampler;
 
-void main() {
+void kore() {
 	vec4 color = texture2D(sampler, texcoord);
 	gl_FragColor = vec4(color.r, color.g, color.b, 1.0);
 }
