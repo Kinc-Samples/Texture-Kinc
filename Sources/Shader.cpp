@@ -24,7 +24,7 @@ namespace {
 		Graphics::clear(Kore::Graphics::ClearColorFlag);
 
 		program->set();
-		Graphics::setMatrix(offset, mat4::RotationZ((float)Kore::System::time()));
+		Graphics::setMatrix(offset, mat3::RotationZ((float)Kore::System::time()));
 		vertices->set();
 		indices->set();
 		texture->set(texunit);
