@@ -4,6 +4,7 @@
 #include <Kore/IO/FileReader.h>
 #include <Kore/Graphics/Graphics.h>
 #include <Kore/Graphics/Shader.h>
+#include <Kore/System.h>
 #include <limits>
 
 using namespace Kore;
@@ -16,12 +17,14 @@ namespace {
 	IndexBuffer* indices;
 	Texture* texture;
 	TextureUnit texunit;
+	ConstantLocation offset;
 
 	void update() {
 		Graphics::begin();
-		Graphics::clear(0);
+		Graphics::clear(Kore::Graphics::ClearColorFlag);
 
 		program->set();
+		Graphics::setFloat(offset, sin(Kore::System::time()));
 		vertices->set();
 		indices->set();
 		texture->set(texunit);
@@ -51,6 +54,7 @@ int kore(int argc, char** argv) {
 	program->link(structure);
 
 	texunit = program->getTextureUnit("sampler");
+	offset = program->getConstantLocation("offset");
 	
 	vertices = new VertexBuffer(3, structure);
 	float* v = vertices->lock();
