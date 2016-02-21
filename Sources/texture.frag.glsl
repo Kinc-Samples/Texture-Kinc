@@ -4,9 +4,9 @@ precision mediump float;
 
 varying vec2 texcoord;
 
-uniform sampler2D sampler;
+uniform sampler2D texsampler;
 
 void kore() {
-	vec4 color = texture2D(sampler, texcoord);
+	vec4 color = texture2D(texsampler, texcoord);
 	gl_FragColor = vec4(color.r, color.g, color.b, 1.0);
 }

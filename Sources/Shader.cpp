@@ -25,9 +25,9 @@ namespace {
 
 		program->set();
 		Graphics::setMatrix(offset, mat3::RotationZ((float)Kore::System::time()));
-		vertices->set();
-		indices->set();
-		texture->set(texunit);
+		Graphics::setVertexBuffer(*vertices);
+		Graphics::setIndexBuffer(*indices);
+		Graphics::setTexture(texunit, texture);
 		Graphics::drawIndexedVertices();
 
 		Graphics::end();
@@ -53,8 +53,8 @@ int kore(int argc, char** argv) {
 	program->setFragmentShader(fragmentShader);
 	program->link(structure);
 
-	texunit = program->getTextureUnit("sampler");
-	offset = program->getConstantLocation("matrix");
+	texunit = program->getTextureUnit("texsampler");
+	offset = program->getConstantLocation("mvp");
 	
 	vertices = new VertexBuffer(3, structure);
 	float* v = vertices->lock();
