@@ -36,7 +36,7 @@ namespace {
 }
 
 int kore(int argc, char** argv) {
-	Application* app = new Application(argc, argv, 1024, 768, false, "TextureTest");
+	Application* app = new Application(argc, argv, 1024, 768, 0, false, "TextureTest");
 	app->setCallback(update);
 
 	texture = new Texture("parrot.png");
