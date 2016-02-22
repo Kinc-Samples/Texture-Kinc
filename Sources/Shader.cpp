@@ -35,7 +35,7 @@ namespace {
 }
 
 int kore(int argc, char** argv) {
-	System::simpleSetup(0, nullptr, 1024, 768, 0, 0, "TextureTest");
+	System::simpleSetup(0, nullptr, 1024, 768, 0, Kore::WindowMode::Window, "TextureTest");
 	System::setCallback(update);
 
 	texture = new Texture("parrot.png");
