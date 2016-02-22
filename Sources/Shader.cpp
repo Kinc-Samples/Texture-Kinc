@@ -18,8 +18,10 @@ namespace {
 	TextureUnit texunit;
 	ConstantLocation offset;
 
+	int windowId = -1;
+
 	void update() {
-		Graphics::begin(0);
+		Graphics::begin(windowId);
 		Graphics::clear(Kore::Graphics::ClearColorFlag);
 
 		program->set();
@@ -29,13 +31,13 @@ namespace {
 		Graphics::setTexture(texunit, texture);
 		Graphics::drawIndexedVertices();
 
-		Graphics::end(0);
-		Graphics::swapBuffers(0);
+		Graphics::end(windowId);
+		Graphics::swapBuffers(windowId);
 	}
 }
 
 int kore(int argc, char** argv) {
-	System::simpleSetup(0, nullptr, 1024, 768, 0, Kore::WindowMode::Window, "TextureTest");
+	windowId = System::simpleSetup(0, nullptr, 1024, 768, 0, Kore::WindowMode::Window, "TextureTest");
 	System::setCallback(update);
 
 	texture = new Texture("parrot.png");
