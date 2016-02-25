@@ -1,6 +1,5 @@
 #include "pch.h"
 
-#include <Kore/Application.h>
 #include <Kore/IO/FileReader.h>
 #include <Kore/Graphics/Graphics.h>
 #include <Kore/Graphics/Shader.h>
@@ -19,8 +18,10 @@ namespace {
 	TextureUnit texunit;
 	ConstantLocation offset;
 
+	int windowId = -1;
+
 	void update() {
-		Graphics::begin();
+		Graphics::begin(windowId);
 		Graphics::clear(Kore::Graphics::ClearColorFlag);
 
 		program->set();
@@ -30,14 +31,14 @@ namespace {
 		Graphics::setTexture(texunit, texture);
 		Graphics::drawIndexedVertices();
 
-		Graphics::end();
-		Graphics::swapBuffers();
+		Graphics::end(windowId);
+		Graphics::swapBuffers(windowId);
 	}
 }
 
 int kore(int argc, char** argv) {
-	Application* app = new Application(argc, argv, 1024, 768, 0, false, "TextureTest");
-	app->setCallback(update);
+	windowId = System::simpleSetup(0, nullptr, 1024, 768, 0, Kore::WindowMode::Window, "TextureTest");
+	System::setCallback(update);
 
 	texture = new Texture("parrot.png");
 
@@ -68,7 +69,7 @@ int kore(int argc, char** argv) {
 	i[0] = 0; i[1] = 1; i[2] = 2;
 	indices->unlock();
 
-	app->start();
+	System::start();
 
 	return 0;
 }
