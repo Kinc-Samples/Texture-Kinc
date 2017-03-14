@@ -4,6 +4,7 @@
 #include <Kore/Graphics/Graphics.h>
 #include <Kore/Graphics/Shader.h>
 #include <Kore/System.h>
+
 #include <limits>
 
 using namespace Kore;
@@ -18,10 +19,8 @@ namespace {
 	TextureUnit texunit;
 	ConstantLocation offset;
 
-	int windowId = -1;
-
 	void update() {
-		Graphics::begin(windowId);
+		Graphics::begin();
 		Graphics::clear(Kore::Graphics::ClearColorFlag);
 
 		program->set();
@@ -31,13 +30,13 @@ namespace {
 		Graphics::setTexture(texunit, texture);
 		Graphics::drawIndexedVertices();
 
-		Graphics::end(windowId);
-		Graphics::swapBuffers(windowId);
+		Graphics::end();
+		Graphics::swapBuffers();
 	}
 }
 
 int kore(int argc, char** argv) {
-	windowId = System::simpleSetup(0, nullptr, 1024, 768, 0, Kore::WindowMode::Window, "TextureTest");
+	System::init("TextureTest", 1024, 768);
 	System::setCallback(update);
 
 	texture = new Texture("parrot.png");

@@ -1,11 +1,9 @@
-var solution = new Solution('TextureTest');
-var project = new Project('TextureTest');
+let project = new Project('TextureTest', __dirname);
 
 project.addFile('Sources/**');
 project.setDebugDir('Deployment');
 
-project.addSubProject(Solution.createProject('Kore'));
-
-solution.addProject(project);
-
-return solution;
+Project.createProject('Kore', __dirname).then((kore) => {
+	project.addSubProject(kore);
+	resolve(project);
+});
