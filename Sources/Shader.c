@@ -68,6 +68,7 @@ int kore(int argc, char** argv) {
 	}
 	
 	kinc_g4_vertex_structure_t structure;
+	kinc_g4_vertex_structure_init(&structure);
 	kinc_g4_vertex_structure_add(&structure, "pos", KINC_G4_VERTEX_DATA_FLOAT3);
 	kinc_g4_vertex_structure_add(&structure, "tex", KINC_G4_VERTEX_DATA_FLOAT2);
 	kinc_g4_pipeline_init(&pipeline);
