@@ -9,6 +9,8 @@
 #include <kinc/graphics4/vertexbuffer.h>
 #include <kinc/system.h>
 
+#include <stdlib.h>
+
 static kinc_g4_shader_t vertexShader;
 static kinc_g4_shader_t fragmentShader;
 static kinc_g4_pipeline_t pipeline;
@@ -23,7 +25,7 @@ static void update() {
 	kinc_g4_clear(KINC_G4_CLEAR_COLOR, 0, 0.0f, 0);
 
 	kinc_g4_set_pipeline(&pipeline);
-	Kinc_Matrix3x3 matrix = Kinc_Matrix_RotationZ((float)kinc_time());
+	kinc_matrix3x3_t matrix = kinc_matrix3x_rotation_z((float)kinc_time());
 	kinc_g4_set_matrix3(offset, &matrix);
 	kinc_g4_set_vertex_buffer(&vertices);
 	kinc_g4_set_index_buffer(&indices);
@@ -41,18 +43,36 @@ int kore(int argc, char** argv) {
 	//texture = new Graphics4::Texture("parrot.png");
 	kinc_g4_texture_init(&texture, 512, 512, KINC_IMAGE_FORMAT_RGBA32);
 
-	kinc_file_reader_t vs;
-	kinc_file_reader_open(&vs, "texture.vert", KINC_FILE_TYPE_ASSET);
-	kinc_file_reader_t fs;
-	kinc_file_reader_open(&fs, "texture.frag", KINC_FILE_TYPE_ASSET);
-	kinc_g4_shader_init(&vertexShader, data, length, KINC_G4_SHADER_TYPE_VERTEX);
-	kinc_g4_shader_init(&fragmentShader, data, length, KINC_G4_SHADER_TYPE_FRAGMENT);
+	{
+		kinc_file_reader_t reader;
+		kinc_file_reader_open(&reader, "texture.vert", KINC_FILE_TYPE_ASSET);
+		size_t size = kinc_file_reader_size(&reader);
+		uint8_t *data = malloc(size);
+		kinc_file_reader_read(&reader, data, size);
+		kinc_file_reader_close(&reader);
+		
+		kinc_g4_shader_init(&vertexShader, data, size, KINC_G4_SHADER_TYPE_VERTEX);
+		free(data);
+	}
+
+	{
+		kinc_file_reader_t reader;
+		kinc_file_reader_open(&reader, "texture.frag", KINC_FILE_TYPE_ASSET);
+		size_t size = kinc_file_reader_size(&reader);
+		uint8_t* data = malloc(size);
+		kinc_file_reader_read(&reader, data, size);
+		kinc_file_reader_close(&reader);
+
+		kinc_g4_shader_init(&fragmentShader, data, size, KINC_G4_SHADER_TYPE_FRAGMENT);
+		free(data);
+	}
+	
 	kinc_g4_vertex_structure_t structure;
 	kinc_g4_vertex_structure_add(&structure, "pos", KINC_G4_VERTEX_DATA_FLOAT3);
 	kinc_g4_vertex_structure_add(&structure, "tex", KINC_G4_VERTEX_DATA_FLOAT2);
 	kinc_g4_pipeline_init(&pipeline);
 	pipeline.input_layout[0] = &structure;
-	pipeline.input_layout[1] = nullptr;
+	pipeline.input_layout[1] = NULL;
 	pipeline.vertex_shader = &vertexShader;
 	pipeline.fragment_shader = &fragmentShader;
 	kinc_g4_pipeline_compile(&pipeline);
