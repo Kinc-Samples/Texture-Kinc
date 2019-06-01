@@ -1,4 +1,0 @@
-[submodule "Kore"]
-	path = Kore
-	url = ../Kore
-	branch = master
