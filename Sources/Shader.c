@@ -1,5 +1,6 @@
 #include "pch.h"
 
+#include <kinc/image.h>
 #include <kinc/io/filereader.h>
 #include <kinc/graphics4/graphics.h>
 #include <kinc/graphics4/indexbuffer.h>
@@ -9,6 +10,7 @@
 #include <kinc/graphics4/vertexbuffer.h>
 #include <kinc/system.h>
 
+#include <assert.h>
 #include <stdlib.h>
 
 static kinc_g4_shader_t vertexShader;
@@ -19,6 +21,17 @@ static kinc_g4_index_buffer_t indices;
 static kinc_g4_texture_t texture;
 static kinc_g4_texture_unit_t texunit;
 static kinc_g4_constant_location_t offset;
+
+#define HEAP_SIZE 1024 * 1024
+static uint8_t *heap = NULL;
+static size_t heap_top = 0;
+
+static void* allocate(size_t size) {
+	size_t old_top = heap_top;
+	heap_top += size;
+	assert(heap_top <= HEAP_SIZE);
+	return &heap[old_top];
+}
 
 static void update() {
 	kinc_g4_begin(0);
@@ -40,31 +53,37 @@ int kore(int argc, char** argv) {
 	kinc_init("TextureTest", 1024, 768, NULL, NULL);
 	kinc_set_update_callback(update);
 
-	//texture = new Graphics4::Texture("parrot.png");
-	kinc_g4_texture_init(&texture, 512, 512, KINC_IMAGE_FORMAT_RGBA32);
+	heap = (uint8_t*)malloc(HEAP_SIZE);
+	assert(heap != NULL);
+
+	{
+		kinc_image_t image;
+		void *image_mem = allocate(250 * 250 * 4);
+		kinc_image_init_from_file(&image, image_mem, "parrot.png");
+		kinc_g4_texture_init_from_image(&texture, &image);
+		kinc_image_destroy(&image);
+	}
 
 	{
 		kinc_file_reader_t reader;
 		kinc_file_reader_open(&reader, "texture.vert", KINC_FILE_TYPE_ASSET);
 		size_t size = kinc_file_reader_size(&reader);
-		uint8_t *data = malloc(size);
+		uint8_t *data = allocate(size);
 		kinc_file_reader_read(&reader, data, size);
 		kinc_file_reader_close(&reader);
 		
 		kinc_g4_shader_init(&vertexShader, data, size, KINC_G4_SHADER_TYPE_VERTEX);
-		free(data);
 	}
 
 	{
 		kinc_file_reader_t reader;
 		kinc_file_reader_open(&reader, "texture.frag", KINC_FILE_TYPE_ASSET);
 		size_t size = kinc_file_reader_size(&reader);
-		uint8_t* data = malloc(size);
+		uint8_t* data = allocate(size);
 		kinc_file_reader_read(&reader, data, size);
 		kinc_file_reader_close(&reader);
 
 		kinc_g4_shader_init(&fragmentShader, data, size, KINC_G4_SHADER_TYPE_FRAGMENT);
-		free(data);
 	}
 	
 	kinc_g4_vertex_structure_t structure;
