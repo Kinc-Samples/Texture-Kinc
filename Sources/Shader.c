@@ -49,7 +49,7 @@ static void update() {
 	kinc_g4_swap_buffers();
 }
 
-int kore(int argc, char** argv) {
+int kickstart(int argc, char** argv) {
 	kinc_init("TextureTest", 1024, 768, NULL, NULL);
 	kinc_set_update_callback(update);
 
