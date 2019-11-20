@@ -1,13 +1,13 @@
 #include "pch.h"
 
-#include <kinc/image.h>
-#include <kinc/io/filereader.h>
 #include <kinc/graphics4/graphics.h>
 #include <kinc/graphics4/indexbuffer.h>
 #include <kinc/graphics4/pipeline.h>
 #include <kinc/graphics4/shader.h>
 #include <kinc/graphics4/texture.h>
 #include <kinc/graphics4/vertexbuffer.h>
+#include <kinc/image.h>
+#include <kinc/io/filereader.h>
 #include <kinc/system.h>
 
 #include <assert.h>
@@ -26,7 +26,7 @@ static kinc_g4_constant_location_t offset;
 static uint8_t *heap = NULL;
 static size_t heap_top = 0;
 
-static void* allocate(size_t size) {
+static void *allocate(size_t size) {
 	size_t old_top = heap_top;
 	heap_top += size;
 	assert(heap_top <= HEAP_SIZE);
@@ -49,11 +49,11 @@ static void update() {
 	kinc_g4_swap_buffers();
 }
 
-int kickstart(int argc, char** argv) {
+int kickstart(int argc, char **argv) {
 	kinc_init("TextureTest", 1024, 768, NULL, NULL);
 	kinc_set_update_callback(update);
 
-	heap = (uint8_t*)malloc(HEAP_SIZE);
+	heap = (uint8_t *)malloc(HEAP_SIZE);
 	assert(heap != NULL);
 
 	{
@@ -71,7 +71,7 @@ int kickstart(int argc, char** argv) {
 		uint8_t *data = allocate(size);
 		kinc_file_reader_read(&reader, data, size);
 		kinc_file_reader_close(&reader);
-		
+
 		kinc_g4_shader_init(&vertexShader, data, size, KINC_G4_SHADER_TYPE_VERTEX);
 	}
 
@@ -79,13 +79,13 @@ int kickstart(int argc, char** argv) {
 		kinc_file_reader_t reader;
 		kinc_file_reader_open(&reader, "texture.frag", KINC_FILE_TYPE_ASSET);
 		size_t size = kinc_file_reader_size(&reader);
-		uint8_t* data = allocate(size);
+		uint8_t *data = allocate(size);
 		kinc_file_reader_read(&reader, data, size);
 		kinc_file_reader_close(&reader);
 
 		kinc_g4_shader_init(&fragmentShader, data, size, KINC_G4_SHADER_TYPE_FRAGMENT);
 	}
-	
+
 	kinc_g4_vertex_structure_t structure;
 	kinc_g4_vertex_structure_init(&structure);
 	kinc_g4_vertex_structure_add(&structure, "pos", KINC_G4_VERTEX_DATA_FLOAT3);
@@ -99,17 +99,31 @@ int kickstart(int argc, char** argv) {
 
 	texunit = kinc_g4_pipeline_get_texture_unit(&pipeline, "texsampler");
 	offset = kinc_g4_pipeline_get_constant_location(&pipeline, "mvp");
-	
+
 	kinc_g4_vertex_buffer_init(&vertices, 3, &structure, KINC_G4_USAGE_STATIC, 0);
 	float *v = kinc_g4_vertex_buffer_lock_all(&vertices);
-	v[ 0] = -1.0f; v[ 1] = -1.0f; v[ 2] = 0.5f; v[ 3] = 0.0f; v[ 4] = 1.0f;
-	v[ 5] =  1.0f; v[ 6] = -1.0f; v[ 7] = 0.5f; v[ 8] = 1.0f; v[ 9] = 1.0f;
-	v[10] = -1.0f; v[11] =  1.0f; v[12] = 0.5f; v[13] = 0.0f; v[14] = 0.0f;
+	v[0] = -1.0f;
+	v[1] = -1.0f;
+	v[2] = 0.5f;
+	v[3] = 0.0f;
+	v[4] = 1.0f;
+	v[5] = 1.0f;
+	v[6] = -1.0f;
+	v[7] = 0.5f;
+	v[8] = 1.0f;
+	v[9] = 1.0f;
+	v[10] = -1.0f;
+	v[11] = 1.0f;
+	v[12] = 0.5f;
+	v[13] = 0.0f;
+	v[14] = 0.0f;
 	kinc_g4_vertex_buffer_unlock_all(&vertices);
-	
+
 	kinc_g4_index_buffer_init(&indices, 3);
 	int *i = kinc_g4_index_buffer_lock(&indices);
-	i[0] = 0; i[1] = 1; i[2] = 2;
+	i[0] = 0;
+	i[1] = 1;
+	i[2] = 2;
 	kinc_g4_index_buffer_unlock(&indices);
 
 	kinc_start();
