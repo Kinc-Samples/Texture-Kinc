@@ -1,5 +1,3 @@
-#include "pch.h"
-
 #include <kinc/graphics4/graphics.h>
 #include <kinc/graphics4/indexbuffer.h>
 #include <kinc/graphics4/pipeline.h>
@@ -38,7 +36,7 @@ static void update() {
 	kinc_g4_clear(KINC_G4_CLEAR_COLOR, 0, 0.0f, 0);
 
 	kinc_g4_set_pipeline(&pipeline);
-	kinc_matrix3x3_t matrix = kinc_matrix3x_rotation_z((float)kinc_time());
+	kinc_matrix3x3_t matrix = kinc_matrix3x3_rotation_z((float)kinc_time());
 	kinc_g4_set_matrix3(offset, &matrix);
 	kinc_g4_set_vertex_buffer(&vertices);
 	kinc_g4_set_index_buffer(&indices);
