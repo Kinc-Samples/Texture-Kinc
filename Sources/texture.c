@@ -117,7 +117,7 @@ int kickstart(int argc, char **argv) {
 	v[14] = 0.0f;
 	kinc_g4_vertex_buffer_unlock_all(&vertices);
 
-	kinc_g4_index_buffer_init(&indices, 3, KINC_G4_INDEX_BUFFER_FORMAT_32BIT);
+	kinc_g4_index_buffer_init(&indices, 3, KINC_G4_INDEX_BUFFER_FORMAT_32BIT, KINC_G4_USAGE_STATIC);
 	int *i = kinc_g4_index_buffer_lock(&indices);
 	i[0] = 0;
 	i[1] = 1;
